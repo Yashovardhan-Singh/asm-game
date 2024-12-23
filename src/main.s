@@ -10,50 +10,52 @@ extern CloseWindow
 
 extern initPlayer
 extern drawPlayer
+extern moveLeft
+extern moveRight
+
+extern initEnemy
+extern drawEnemy
 
 section .data
-msg:
-    db          "Hello, World!", 0
-colorWhite:
-    dd          0xFFFFFFFF
-colorBlack:
-    dd          0x0
-
-rectanglePlayer:
-    dd          0, 0, 200, 200
+    msg: db "Hello, World!", 0
 
 section .text
-    global      _start
+    global _start
 
 _start:
 
-    mov rdi,    1920
-    mov rsi,    1080
-    lea rdx,    [msg]
-    call        InitWindow
+    mov rdi, 1280
+    mov rsi, 720
+    lea rdx, [msg]
+    call InitWindow
 
-    mov rdi,    60
-    call        SetTargetFPS
+    mov rdi, 60
+    call SetTargetFPS
 
-    call        initPlayer
+    call initPlayer
+    call initEnemy
 
 game_loop:
 
-    call        BeginDrawing
+    call moveLeft
+    call moveRight
 
-    mov rdi,    [colorBlack]
-    call        ClearBackground
+    call BeginDrawing
 
-    call        drawPlayer
+    mov rdi, 0x0
+    call ClearBackground
 
-    call        EndDrawing
+    call drawPlayer
+    call drawEnemy      ; Todo, enemies not drawing
 
-    call        WindowShouldClose
-    cmp rax,    0
-    jz          game_loop
+    call EndDrawing
 
-    call        CloseWindow
+    call WindowShouldClose
+    cmp rax, 0
+    jz game_loop
 
-    mov rax,    60
-    mov rdi,    0
+    call CloseWindow
+
+    mov rax, 60
+    mov rdi, 0
     syscall

@@ -1,50 +1,57 @@
 BITS 64
 
+%include "include/hardware.inc"
+
 extern DrawRectangle
 extern colorWhite
-
-x_offset equ 0
-y_offset equ 4
-w_offset equ 0
-h_offset equ 4
+extern IsKeyDown
 
 global initPlayer
 global drawPlayer
-
-section .data
-p_rect_dim:
-    dd          256, 32
+global moveLeft
+global moveRight
 
 section .bss
-p_rect_pos:
-    resd        2
-
+p_rect_pos: resd 1
 
 section .text
 
 initPlayer:
-    push rbp
-    mov rbp, rsp
-
-    mov rax, 900
-    mov [p_rect_pos+x_offset], rax
-    mov [p_rect_pos+y_offset], rax
-
-    mov rsp, rbp
-    pop rbp
+    mov rax, 20
+    mov [p_rect_pos], rax
     ret
 
 drawPlayer:
-    push rbp
-    mov rbp, rsp
+    mov rdi, [p_rect_pos]
+    mov rsi, 600
+    mov rdx, 32
+    mov rcx, 32
+    mov r8,  0xFFFFFFFF
+    call     DrawRectangle
+    ret
 
-    mov rdi,    [p_rect_pos+x_offset]
-    mov rsi,    [p_rect_pos+y_offset]
-    mov rdx,    [p_rect_dim+w_offset]
-    mov rcx,    [p_rect_dim+h_offset]
-    mov r8,     0xFFFFFFFF
-    call        DrawRectangle
+moveLeft:
+    mov rdi, KEY_A
+    call IsKeyDown
+    cmp rax, 1
+    jnz .exit
+    mov rax, [p_rect_pos]
+    sub rax, 12
+    cmp rax, 0
+    jle .exit
+    mov [p_rect_pos], rax
+.exit:
+    ret
 
-    mov rsp, rbp
-    pop rbp
+moveRight:
+    mov rdi, KEY_D
+    call IsKeyDown
+    cmp rax, 1
+    jnz .exit
+    mov rax, [p_rect_pos]
+    add rax, 12
+    cmp rax, 1248
+    jge .exit
+    mov [p_rect_pos], rax
+.exit:
     ret
