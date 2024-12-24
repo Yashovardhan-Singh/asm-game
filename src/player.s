@@ -35,10 +35,9 @@ moveLeft:
     call IsKeyDown
     cmp rax, 1
     jnz .exit
-    mov rax, [p_rect_pos]
-    sub rax, 12
-    cmp rax, 0
-    jle .exit
+    sub dword [p_rect_pos], 12
+    cmp dword [p_rect_pos], 0
+    jge .exit                       ; Little endian?
     mov [p_rect_pos], rax
 .exit:
     ret
@@ -48,10 +47,9 @@ moveRight:
     call IsKeyDown
     cmp rax, 1
     jnz .exit
-    mov rax, [p_rect_pos]
-    add rax, 12
-    cmp rax, 1248
-    jge .exit
+    add dword [p_rect_pos], 12
+    cmp dword [p_rect_pos], 1248
+    jle .exit                       ; Little endian?
     mov [p_rect_pos], rax
 .exit:
     ret

@@ -38,7 +38,7 @@ build:
 .PHONY: build
 
 link:
-	@$(LD) $(OBJS) -o $(DIROUT)/$(BINNAME) -dynamic-linker /lib64/ld-linux-x86-64.so.2 -Llibs/ -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -lc
+	@$(LD) $(OBJS) -o $(DIROUT)/$(BINNAME) -dynamic-linker /lib64/ld-linux-x86-64.so.2 -Llibs/ -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -lc -Map=bin/out.map
 .PHONY: link
 
 pre-config:

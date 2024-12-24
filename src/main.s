@@ -13,8 +13,10 @@ extern drawPlayer
 extern moveLeft
 extern moveRight
 
-extern initEnemy
-extern drawEnemy
+extern initEnemies
+extern drawEnemies
+extern initEnemyDirections
+extern updateEnemies
 
 section .data
     msg: db "Hello, World!", 0
@@ -33,12 +35,14 @@ _start:
     call SetTargetFPS
 
     call initPlayer
-    call initEnemy
+    call initEnemies
 
 game_loop:
 
     call moveLeft
     call moveRight
+
+    ; call updateEnemies        ; currently broken
 
     call BeginDrawing
 
@@ -46,7 +50,7 @@ game_loop:
     call ClearBackground
 
     call drawPlayer
-    call drawEnemy      ; Todo, enemies not drawing
+    call drawEnemies
 
     call EndDrawing
 
