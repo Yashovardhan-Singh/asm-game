@@ -49,9 +49,9 @@ updateEnemies:
 
 moveEnemy:
     cmp dword [enemies_dirs + (rbx*4)], 1
-    jz .negative
+    je .negative
     cmp dword [enemies_dirs + (rbx*4)], 2
-    jz .positive
+    je .positive
     jmp .exit
 .negative:
     sub dword [enemies + (rbx*8)], 6

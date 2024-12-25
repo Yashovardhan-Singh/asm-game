@@ -10,8 +10,10 @@ global drawPlayer
 global moveLeft
 global moveRight
 
+global p_rect_pos
+
 section .bss
-p_rect_pos: resd 1
+    p_rect_pos: resd 1
 
 section .text
 
@@ -33,7 +35,7 @@ moveLeft:
     mov rdi, KEY_A
     call IsKeyDown
     cmp rax, 1
-    jnz .exit
+    jne .exit
     mov rax, [p_rect_pos]
     sub rax, 12
     cmp rax, 0
@@ -46,7 +48,7 @@ moveRight:
     mov rdi, KEY_D
     call IsKeyDown
     cmp rax, 1
-    jnz .exit
+    jne .exit
     mov rax, [p_rect_pos]
     add rax, 12
     cmp rax, 1248

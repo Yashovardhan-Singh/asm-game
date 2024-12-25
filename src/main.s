@@ -20,6 +20,10 @@ extern drawEnemies
 extern initEnemyDirections
 extern updateEnemies
 
+extern initBullet
+extern updateBullet
+extern b_enable
+
 section .data
     msg: db "Hello, World!", 0
 
@@ -38,6 +42,9 @@ _start:
     call initPlayer
     call initEnemies
 
+    mov byte [b_enable], 0
+    call initBullet
+
 game_loop:
     call moveLeft
     call moveRight
@@ -49,6 +56,7 @@ game_loop:
     
     call updateEnemies
     call drawPlayer
+    call updateBullet
 
     call EndDrawing
 
