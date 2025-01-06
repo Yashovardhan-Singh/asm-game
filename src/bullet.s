@@ -1,5 +1,3 @@
-BITS 64
-
 %include "include/hardware.inc"
 
 extern IsKeyPressed
@@ -10,6 +8,7 @@ extern p_rect_pos
 global initBullet
 global updateBullet
 global b_enable
+global b_pos
 
 section .data
     radius: dd 6.0

@@ -1,13 +1,14 @@
-BITS 64
-
 extern DrawRectangle
 extern GetRandomValue
+extern CheckCollisionCircleRec
+
+extern b_pos
+extern b_enable
+extern initBullet
 
 global initEnemies
-global drawEnemies
+global drawEnemy
 global updateEnemies
-global initEnemyDirections
-global enemies
 
 MAX_ENEMIES equ 10
 
@@ -20,20 +21,23 @@ section .text
 initEnemies:
     xor rbx, rbx
 .loop:
+    call setEnemy
+    inc rbx
+    cmp rbx, MAX_ENEMIES
+    jl .loop
+    ret
+
+setEnemy:
     mov rdi, 0
     mov rsi, 1248
     call GetRandomValue
-    lea r12, [enemies + (rbx*8)]
-    mov dword [r12], eax
-    mov dword [r12 + 4], 50
+    mov dword [enemies + (rbx*8)], eax
+    mov dword [enemies + (rbx*8) + 4], 50
     mov rdi, 1
     mov rsi, 2
     call GetRandomValue
     lea r12, [enemies_dirs + (rbx*4)]
-    mov dword [r12], eax
-    inc rbx
-    cmp rbx, MAX_ENEMIES
-    jle .loop
+    mov dword [enemies_dirs + (rbx*4)], eax
     ret
 
 updateEnemies:
@@ -41,7 +45,11 @@ updateEnemies:
 .loop:
     call collideEnemy
     call moveEnemy
-    call drawEnemies
+    call drawEnemy
+    cmp byte [b_enable], 1
+    jne .continue
+    call enemyBulletCollide
+.continue:
     inc rbx
     cmp rbx, MAX_ENEMIES
     jl .loop
@@ -52,14 +60,12 @@ moveEnemy:
     je .negative
     cmp dword [enemies_dirs + (rbx*4)], 2
     je .positive
-    jmp .exit
+    ret
 .negative:
     sub dword [enemies + (rbx*8)], 6
-    jmp .exit
+    ret
 .positive:
     add dword [enemies + (rbx*8)], 6
-    jmp .exit
-.exit:
     ret
 
 collideEnemy:
@@ -67,22 +73,45 @@ collideEnemy:
     jle .left
     cmp dword [enemies + (rbx*8)], 1248
     jge .right
-    jmp .exit
+    ret
 .left:
     mov dword [enemies_dirs + (rbx*4)], 2
     add dword [enemies + (rbx*8) + 4], 25
-    jmp .exit
+    ret
 .right:
     mov dword [enemies_dirs + (rbx*4)], 1
     add dword [enemies + (rbx*8) + 4], 25
-.exit:
     ret
 
-drawEnemies:
+drawEnemy:
+    push rbx
     mov rdi, [enemies + (rbx*8)]
     mov rsi, [enemies + (rbx*8) + 4]
     mov rdx, 32
     mov rcx, 32
     mov r8, 0xFFFFFFFF
     call DrawRectangle
+    pop rbx
+    ret
+
+enemyBulletCollide:
+    mov eax, [enemies + (rbx * 8)]
+    mov ecx, [enemies + (rbx * 8) + 4]
+    mov edx, [b_pos]
+    cmp edx, eax
+    jb  .exit
+    add eax, 32
+    cmp edx, eax
+    jnb .exit
+    mov edx, [b_pos + 4]
+    cmp edx, ecx
+    jb  .exit
+    add ecx, 32
+    cmp edx, ecx
+    jnb .exit
+    
+    call setEnemy
+    mov byte [b_enable], 0
+    call initBullet
+.exit:
     ret

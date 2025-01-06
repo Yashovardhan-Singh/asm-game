@@ -1,5 +1,3 @@
-BITS 64
-
 %include "include/hardware.inc"
 
 extern DrawRectangle

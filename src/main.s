@@ -1,5 +1,3 @@
-BITS 64
-
 ; Raylib imports
 extern InitWindow
 extern SetTargetFPS
@@ -9,7 +7,7 @@ extern EndDrawing
 extern WindowShouldClose
 extern CloseWindow
 
-; 
+; Player imports
 extern initPlayer
 extern drawPlayer
 extern moveLeft
@@ -54,9 +52,9 @@ game_loop:
     mov rdi, 0x0
     call ClearBackground
     
+    call updateBullet
     call updateEnemies
     call drawPlayer
-    call updateBullet
 
     call EndDrawing
 

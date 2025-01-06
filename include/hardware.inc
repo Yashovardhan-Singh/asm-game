@@ -1,3 +1,4 @@
+; HARDWARE CONSTANTS FILE
 KEY_NULL            equ 0,        ; Key: NULL, used for no key pressed
 KEY_APOSTROPHE      equ 39,       ; Key: '
 KEY_COMMA           equ 44,       ; Key: ,
